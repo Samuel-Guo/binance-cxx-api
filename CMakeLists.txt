@@ -80,7 +80,15 @@ target_link_libraries(${PROJECT_NAME} ${LIBWEBSOCKETS_LIBRARIES} ${JSONCPP_LIBRA
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_executable(example example.cpp)
-target_include_directories(example PRIVATE "${JSONCPP_INCLUDE_DIRS}")
-target_link_libraries(example ${PROJECT_NAME})
+#add_executable(example example.cpp)
+AUX_SOURCE_DIRECTORY(. DIR_SRCS)
+ 
+ADD_EXECUTABLE(binaData main.cpp)
 
+target_link_libraries(binaData ${PROJECT_NAME})
+
+if (CMAKE_BUILD_TYPE STREQUAL Debug)
+
+add_definitions(-DDEBUG)
+
+endif ()
