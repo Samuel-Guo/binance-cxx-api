@@ -3,80 +3,98 @@
 #include <map>
 #include <string>
 #include <vector>
-
-#include "binance.h"
+#include <fstream>
+//#include <cctype>
 #include "binance_logger.h"
-#include "binance_websocket.h"
+
+#include "dataGetor.h"
+#include "timeStringConvert.h"
+const std::string verString =
+"V1.0"
+;
+
+//Server serverUs("https://api.binance.us");
+//Server serverCn;
+//Server& server = serverCn;
 
 using namespace binance;
 using namespace std;
 
 map<long, map<string, double> > klinesCache;
 
-static void print_klinesCache()
+int main(int argc, char* argv[])
 {
-	cout << "==================================" << endl;
+	ofstream  myfile("he.txt");
 
-	for (map<long, map<string, double> >::iterator it_i = klinesCache.begin();
-		it_i != klinesCache.end(); it_i++)
-	{
-		long start_of_candle = (*it_i).first;
-		map <string, double> candle_obj = (*it_i).second;
+	bool b = getenv("FREEZE_ON_ERROR");
 
-		cout << "s:" << start_of_candle << ",";
-		cout << "o:" << candle_obj["o"] << ",";
-		cout << "h:" << candle_obj["h"] << ",";
-		cout << "l:" << candle_obj["l"] << ",";
-		cout << "c:" << candle_obj["c"] << ",";
-		cout << "v:" << candle_obj["v"];
-		cout << " " << endl;
-	}
-}
-
-static int ws_klines_onData(Json::Value& json_result)
-{
-	long start_of_candle = json_result["k"]["t"].asInt64();
-	klinesCache[start_of_candle]["o"] = atof(json_result["k"]["o"].asString().c_str());
-	klinesCache[start_of_candle]["h"] = atof(json_result["k"]["h"].asString().c_str());
-	klinesCache[start_of_candle]["l"] = atof(json_result["k"]["l"].asString().c_str());
-	klinesCache[start_of_candle]["c"] = atof(json_result["k"]["c"].asString().c_str());
-	klinesCache[start_of_candle]["v"] = atof(json_result["k"]["v"].asString().c_str());
-
-	print_klinesCache();
-
-	return 0;
-}
-
-int main()
-{
 	Logger::set_debug_level(1);
-	Logger::set_debug_logfp(stderr);
+	Logger::set_debug_logfp(stdout);
 
-	Json::Value result;
+	system("echo ALL_PROXY = $ALL_PROXY");
 
-	Server server;
+	srand(time(NULL));
+	
+	time_t startTime = time(NULL);
 
-	Market market(server);
+	cout << "----start at----" << ctime(&startTime) << verString << endl;
 
-	// Klines / CandleStick
-	BINANCE_ERR_CHECK(market.getKlines(result, "POEBTC", "1h", 0, 0, 10));
+	
+	//cout << "<>Server::getTime<>" << endl;
+	//Json::Value result;
 
-	for (Json::Value::ArrayIndex i = 0; i < result.size(); i++)
+	//server.getTime(result);
+
+
+	//Json::Value tl = result["serverTime"];
+	//if (!tl.isNull())
+	//{
+	//	cout << "serverTime = " << result["serverTime"] << endl;
+
+	//}
+	//else
+	//{
+	//	cerr << "result =" << result << endl;
+	//	cerr << "<>Server::getTime<> failed" << endl;
+	//}
+
+	dataGetor getor;
+	for (int i = 1; i < argc-1; ++i)
 	{
-		long start_of_candle = result[i][0].asInt64();
-		klinesCache[start_of_candle]["o"] = atof(result[i][1].asString().c_str());
-		klinesCache[start_of_candle]["h"] = atof(result[i][2].asString().c_str());
-		klinesCache[start_of_candle]["l"] = atof(result[i][3].asString().c_str());
-		klinesCache[start_of_candle]["c"] = atof(result[i][4].asString().c_str());
-		klinesCache[start_of_candle]["v"] = atof(result[i][5].asString().c_str());
+		cout << argv[i] << " - " << argv[i + 1] << endl;
+		if (strcasecmp(argv[i], "-s")==0)
+		{
+			getor.symbol =  argv[i + 1];
+		}
+		else if (strcasecmp(argv[i], "-st") == 0)
+		{
+			getor.startTime = timeConvertor::str2time(argv[i + 1],"%Y%m%d-%H%M%S");
+		}
+		else if (strcasecmp(argv[i], "-et") == 0)
+		{
+			getor.endTime = timeConvertor::str2time(argv[i + 1], "%Y%m%d-%H%M%S");
+		}
+		else if (strcasecmp(argv[i], "-i") == 0)
+		{
+			getor.interval = argv[i + 1];
+		}
 	}
 
-	print_klinesCache();
+	getor.startTime -= 3600 * 8;
+	getor.endTime -= 3600 * 8;
 
-	// Klines/Candlestick update via websocket
-	Websocket::init();
-	Websocket::connect_endpoint(ws_klines_onData, "/ws/poebtc@kline_1m");
-	Websocket::enter_event_loop();
+	auto data =getor.getData();
+
+	cout << "@@data.size()@@" << data.size() << endl;
+	int count = 1;
+	for (auto& item : data)
+	{
+		cout << count <<"\t" << timeConvertor::ShowDateTime(item.datatime) << "\t" << item.datatime << "\t" << item.open << endl;
+		myfile << count << "\t" << timeConvertor::ShowDateTime(item.datatime) << "\t" << item.datatime << "\t" << item.open << endl;
+		count++;
+
+	}
+
 
 	return 0;
 }
