@@ -6,7 +6,7 @@
       "cwd": "${debugInfo.defaultWorkingDirectory}",
       "externalConsole": true,
       "MIMode": "gdb",
-      "name": "get",
+      "name": "get(proxy)",
       "pipeTransport": {
         "pipeProgram": "${debugInfo.shellexecPath}",
         "pipeArgs": [
@@ -52,7 +52,7 @@
       "cwd": "${debugInfo.defaultWorkingDirectory}",
       "externalConsole": true,
       "MIMode": "gdb",
-      "name": "trade(n wsl-pv-debug2)",
+      "name": "get",
       "pipeTransport": {
         "pipeProgram": "${debugInfo.shellexecPath}",
         "pipeArgs": [
@@ -62,19 +62,25 @@
           "${debugInfo.parentProcessId}",
           "/c",
           "export",
-          "ALL_PROXY=http://127.0.0.1:1080;",
+          "FREEZE_ON_ERROR=1;",
           "${debuggerCommand}",
           "--tty=${debugInfo.tty}",
           "--args",
           "--",
-          "-debug",
-          "-pv"
+          "-s",
+          "BTCBUSD",
+          "-st",
+          "20200701-000000",
+          "-et",
+          "20200800-000000",
+          "-i",
+          "1m"
         ],
         "debuggerPath": "/usr/bin/gdb"
       },
       "program": "${debugInfo.fullTargetPath}",
       "project": "CMakeLists.txt",
-      "projectTarget": "trade",
+      "projectTarget": "binaData",
       "remoteMachineName": "${debugInfo.remoteMachineName}",
       "setupCommands": [
         {
