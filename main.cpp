@@ -4,13 +4,14 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <unistd.h>
 //#include <cctype>
 #include "binance_logger.h"
 
 #include "dataGetor.h"
 #include "timeStringConvert.h"
 const std::string verString =
-"V1.0"
+"V1.11"
 ;
 
 //Server serverUs("https://api.binance.us");
@@ -24,7 +25,6 @@ map<long, map<string, double> > klinesCache;
 
 int main(int argc, char* argv[])
 {
-	ofstream  myfile("he.txt");
 
 	bool b = getenv("FREEZE_ON_ERROR");
 
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 	//	cerr << "result =" << result << endl;
 	//	cerr << "<>Server::getTime<> failed" << endl;
 	//}
-
+	string outfile="getorData.txt";
 	dataGetor getor;
 	for (int i = 1; i < argc-1; ++i)
 	{
@@ -78,6 +78,11 @@ int main(int argc, char* argv[])
 		{
 			getor.interval = argv[i + 1];
 		}
+		else if (strcasecmp(argv[i], "-f") == 0)
+		{
+			outfile = argv[i + 1];
+		}
+
 	}
 
 	getor.startTime -= 3600 * 8;
@@ -85,16 +90,20 @@ int main(int argc, char* argv[])
 
 	auto data =getor.getData();
 
+	ofstream  myfile(outfile);
+
 	cout << "@@data.size()@@" << data.size() << endl;
 	int count = 1;
 	for (auto& item : data)
 	{
-		cout << count <<"\t" << timeConvertor::ShowDateTime(item.datatime) << "\t" << item.datatime << "\t" << item.open << endl;
-		myfile << count << "\t" << timeConvertor::ShowDateTime(item.datatime) << "\t" << item.datatime << "\t" << item.open << endl;
+		ostringstream os;
+		os << count <<"\t" << timeConvertor::ShowDateTime(item.datatime) << "\t" << item.datatime << "\t" 
+			<< item.open << "\t" <<item.high<<"\t" <<item.low <<"\t" << item.close;
+		cout << os.str() << endl;
+		myfile << os.str() << endl;
 		count++;
 
 	}
-
 
 	return 0;
 }
