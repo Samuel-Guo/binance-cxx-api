@@ -26,11 +26,11 @@
           "-s",
           "BTCBUSD",
           "-st",
-          "20200701-000000",
+          "20200601-000000",
           "-et",
-          "20200800-000000",
+          "20200801-000000",
           "-i",
-          "1m"
+          "1d"
         ],
         "debuggerPath": "/usr/bin/gdb"
       },
@@ -52,7 +52,7 @@
       "cwd": "${debugInfo.defaultWorkingDirectory}",
       "externalConsole": true,
       "MIMode": "gdb",
-      "name": "get",
+      "name": "get(no proxy)",
       "pipeTransport": {
         "pipeProgram": "${debugInfo.shellexecPath}",
         "pipeArgs": [
@@ -70,11 +70,11 @@
           "-s",
           "BTCBUSD",
           "-st",
-          "20200701-000000",
+          "20180801-000000",
           "-et",
-          "20200800-000000",
+          "20180810-000000",
           "-i",
-          "1m"
+          "1d"
         ],
         "debuggerPath": "/usr/bin/gdb"
       },

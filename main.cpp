@@ -11,7 +11,7 @@
 #include "dataGetor.h"
 #include "timeStringConvert.h"
 const std::string verString =
-"V1.11"
+"V1.12"
 ;
 
 //Server serverUs("https://api.binance.us");
@@ -57,8 +57,13 @@ int main(int argc, char* argv[])
 	//	cerr << "result =" << result << endl;
 	//	cerr << "<>Server::getTime<> failed" << endl;
 	//}
-	string outfile="getorData.txt";
+	string outfile;
 	dataGetor getor;
+	if (argc < 8)
+	{
+		cout << "usage:" << endl;
+		exit(0);
+	}
 	for (int i = 1; i < argc-1; ++i)
 	{
 		cout << argv[i] << " - " << argv[i + 1] << endl;
@@ -85,6 +90,16 @@ int main(int argc, char* argv[])
 
 	}
 
+	cout << "start Time = " << timeConvertor::ShowDateTime(getor.startTime) << endl
+		<< "end time = " << timeConvertor::ShowDateTime(getor.endTime) << endl;
+	cout << "interval:" << getor.interval << endl;
+
+
+	if (outfile == "")
+	{
+		outfile = "getorData" + timeConvertor::ShowDateTime(getor.startTime)
+			+ "-" + timeConvertor::ShowDateTime(getor.endTime) + "-" + getor.interval + ".txt";
+	}
 	getor.startTime -= 3600 * 8;
 	getor.endTime -= 3600 * 8;
 
@@ -104,6 +119,8 @@ int main(int argc, char* argv[])
 		count++;
 
 	}
+
+	cout << endl<< "output:" << outfile << endl;
 
 	return 0;
 }
