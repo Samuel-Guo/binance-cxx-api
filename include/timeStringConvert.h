@@ -101,7 +101,7 @@ namespace timeConvertor
 
         ::strptime(dateStr.c_str(), format.c_str(), &t);// windows下用不了
 
-        return mkgmtime(&t);
+        return mktime(&t);
     }
 
     time_t str2time(const string& dateStr, const char& dateDiv = '-', const char& timeDiv = ':')

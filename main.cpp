@@ -11,7 +11,7 @@
 #include "dataGetor.h"
 #include "timeStringConvert.h"
 const std::string verString =
-"V1.12"
+"V1.21"
 ;
 
 //Server serverUs("https://api.binance.us");
@@ -100,8 +100,6 @@ int main(int argc, char* argv[])
 		outfile = "getorData" + timeConvertor::ShowDateTime(getor.startTime)
 			+ "-" + timeConvertor::ShowDateTime(getor.endTime) + "-" + getor.interval + ".txt";
 	}
-	getor.startTime -= 3600 * 8;
-	getor.endTime -= 3600 * 8;
 
 	auto data =getor.getData();
 
