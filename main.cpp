@@ -11,7 +11,7 @@
 #include "dataGetor.h"
 #include "timeStringConvert.h"
 const std::string verString =
-"V1.21"
+"V1.22"
 ;
 
 //Server serverUs("https://api.binance.us");
@@ -62,6 +62,9 @@ int main(int argc, char* argv[])
 	if (argc < 8)
 	{
 		cout << "usage:" << endl;
+		cout<< "- s BTCUSDT -st	20180101-020000"
+			<<"-et 20200801-020000 -i 1d"<<endl;
+		cout << "{3m 5m 15m 30m 1h 2h 4h 6h 8h 12h 1d 3d 1w 1M}" << endl;
 		exit(0);
 	}
 	for (int i = 1; i < argc-1; ++i)
@@ -97,7 +100,7 @@ int main(int argc, char* argv[])
 
 	if (outfile == "")
 	{
-		outfile = "getorData" + timeConvertor::ShowDateTime(getor.startTime)
+		outfile = "gData"+getor.symbol+"-" + timeConvertor::ShowDateTime(getor.startTime)
 			+ "-" + timeConvertor::ShowDateTime(getor.endTime) + "-" + getor.interval + ".txt";
 	}
 
