@@ -3,8 +3,9 @@
 #include <unistd.h>
 
 using namespace std;
-dataGetor::dataGetor() :market(server)
+dataGetor::dataGetor(binance::Server &server) :server(server), market(server)
 {
+
 }
 
 dataGetor::~dataGetor()
@@ -18,6 +19,7 @@ std::vector<dataGetor::dataStru> dataGetor::getData()
     vector<dataStru> data;
     //if (startTime <= endTime)
     //     return std::vector<dataStru>();
+    time_t range = endTime - startTime;
     time_t stime = startTime;
     time_t etime = time(0);
     Json::Value result;
@@ -27,6 +29,8 @@ std::vector<dataGetor::dataStru> dataGetor::getData()
         BINANCE_ERR_CHECK(market.getKlines(result, symbol.c_str(), interval.c_str(), stime*1000, etime*1000));
         //long start_of_candle;
         cout << "@@result.size()@@" << result.size() << endl;
+        int percent = float(stime - startTime) / range * 100.0f;
+        cout << percent << "%" << endl;
         sleep(1);
         for (Json::Value::ArrayIndex i = 0; i < result.size(); i++)
         {

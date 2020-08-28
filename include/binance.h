@@ -128,7 +128,7 @@ namespace binance
 
 	public :
 
-		Server(const char* hostname = "https://api.binance.com", bool simulation = false);
+		Server(const char* hostname = "https://api.binance.com",const char* prefix = "/api/v3", bool simulation = false);
 		
 		const std::string& getHostname() const;
 		bool isSimulator() const;
@@ -140,12 +140,17 @@ namespace binance
 
 		static binanceError_t getCurlWithHeader(std::string& result_json, const std::string& url,
 			const std::vector<std::string>& extra_http_header, const std::string& post_data, const std::string& action);
+	
+		const std::string prefix;
+
 	};
 
 	class Market
 	{
 		const std::string& hostname;
 		const Server& server;
+		std::string prefix;
+
 
 	public :
 
@@ -192,6 +197,8 @@ namespace binance
 		Account(const binance::Server& server,
 			const std::string api_key = "", const std::string secret_key = "");
 
+		const std::string prefix;
+
 		bool keysAreSet() const;
 
 		binanceError_t getInfo(Json::Value &json_result, long recvWindow = 0);
@@ -224,6 +231,9 @@ namespace binance
 		binanceError_t cancelOrder(Json::Value &json_result, const char *symbol,
 			long orderId, const char *origClientOrderId, const char *newClientOrderId, long recvWindow);
 
+
+		binanceError_t getBalance_f(Json::Value& json_result, long recvWindow = 0);
+
 		// API key required
 		binanceError_t startUserDataStream(Json::Value &json_result);
 		binanceError_t keepUserDataStream(const char *listenKey);
@@ -241,6 +251,9 @@ namespace binance
 			const char *asset, int status, long startTime, long endTime, long recvWindow);
 
 		binanceError_t getDepositAddress(Json::Value &json_result, const char *asset, long recvWindow);
+
+
+
 	};
 }
 

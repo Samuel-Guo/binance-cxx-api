@@ -8,7 +8,7 @@
       "MIMode": "gdb",
       "name": "get(proxy)",
       "pipeTransport": {
-        "pipeProgram": "${debugInfo.shellexecPath}",
+        "pipeProgram": "${debugInfo.windowsSubsystemPath}",
         "pipeArgs": [
           "/s",
           "${debugInfo.remoteMachineId}",
@@ -26,9 +26,9 @@
           "-s",
           "BTCUSDT",
           "-st",
-          "20180101-020000",
+          "20200801020000",
           "-et",
-          "20200801-020000",
+          "202008020020000",
           "-i",
           "1d"
         ],
@@ -68,11 +68,11 @@
           "--args",
           "--",
           "-s",
-          "BTCBUSD",
+          "BTCUSDT",
           "-st",
-          "20191001-000000",
+          "20171201020000",
           "-et",
-          "20200801-000000",
+          "20200801020000",
           "-i",
           "1d"
         ],

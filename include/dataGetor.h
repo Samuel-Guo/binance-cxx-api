@@ -9,7 +9,7 @@ class dataGetor
 {
 
 public:
-	dataGetor();
+	dataGetor(binance::Server& server);
 	~dataGetor();
 	
 	struct dataStru
@@ -22,8 +22,8 @@ public:
 		time_t datatime;
 
 	};
-
 	binance::Server server;
+
 	binance::Market market;
 
 	std::string symbol;

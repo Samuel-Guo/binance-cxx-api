@@ -11,17 +11,43 @@
 #include "dataGetor.h"
 #include "timeStringConvert.h"
 const std::string verString =
-"V1.22"
+"V1.3"
 ;
 
 //Server serverUs("https://api.binance.us");
-//Server serverCn;
+binance::Server serverCn;
 //Server& server = serverCn;
 
 using namespace binance;
 using namespace std;
 
+
 map<long, map<string, double> > klinesCache;
+
+void testFuture()
+{
+    cout << "<>Server::getTime<>" << endl;
+
+	binance::Server server("https://fapi.binance.com", "/fapi/v1/");
+
+	Json::Value result;
+
+	server.getTime(result);
+	
+	cout << result << endl;
+
+	result.clear();
+	Account acc(server);
+
+	BINANCE_ERR_CHECK(acc.getBalance_f(result,5000));
+	cout << result << endl;
+
+	//Json::Value result;
+
+	//server.getTime(result);
+
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -35,17 +61,13 @@ int main(int argc, char* argv[])
 
 	srand(time(NULL));
 	
+	testFuture();
+
 	time_t startTime = time(NULL);
 
 	cout << "----start at----" << ctime(&startTime) << verString << endl;
 
 	
-	//cout << "<>Server::getTime<>" << endl;
-	//Json::Value result;
-
-	//server.getTime(result);
-
-
 	//Json::Value tl = result["serverTime"];
 	//if (!tl.isNull())
 	//{
@@ -58,7 +80,7 @@ int main(int argc, char* argv[])
 	//	cerr << "<>Server::getTime<> failed" << endl;
 	//}
 	string outfile;
-	dataGetor getor;
+	dataGetor getor(serverCn);
 	if (argc < 8)
 	{
 		cout << "usage:" << endl;
@@ -76,11 +98,11 @@ int main(int argc, char* argv[])
 		}
 		else if (strcasecmp(argv[i], "-st") == 0)
 		{
-			getor.startTime = timeConvertor::str2time(argv[i + 1],"%Y%m%d-%H%M%S");
+			getor.startTime = timeConvertor::str2time(argv[i + 1],"%Y%m%d%H%M%S");
 		}
 		else if (strcasecmp(argv[i], "-et") == 0)
 		{
-			getor.endTime = timeConvertor::str2time(argv[i + 1], "%Y%m%d-%H%M%S");
+			getor.endTime = timeConvertor::str2time(argv[i + 1], "%Y%m%d%H%M%S");
 		}
 		else if (strcasecmp(argv[i], "-i") == 0)
 		{
